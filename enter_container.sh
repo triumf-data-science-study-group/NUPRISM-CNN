@@ -28,4 +28,4 @@ CONTAINER_PATH=/project/def-tafirout/wfedorko/baseml-v0.2.simg
 CDIR=`readlink -f ${PWD}`
 DATA_DIR=`readlink -f /scratch/wfedorko`
 
-SINGULARITYENV_SLURM_SUBMIT_DIR=$SLURM_SUBMIT_DIR singularity exec --nv --bind ${CDIR} --bind ${DATA_DIR} ${CONTAINER_PATH} ${SCRIPT_TO_RUN}
+SINGULARITYENV_SLURM_SUBMIT_DIR=$SLURM_SUBMIT_DIR singularity exec --nv --bind ${CDIR} --bind ${DATA_DIR} --bind /localscratch ${CONTAINER_PATH} ${SCRIPT_TO_RUN}
