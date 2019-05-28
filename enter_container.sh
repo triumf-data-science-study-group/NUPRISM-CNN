@@ -24,7 +24,7 @@ if [[ $1 != "" ]]; then
 	SCRIPT_TO_RUN=$1
 fi
 
-CONTAINER_PATH=/project/def-tafirout/wfedorko/baseml-v0.2.simg
+CONTAINER_PATH= /scratch/wfedorko/TRIUMF_DS_NUPRISM/baseml-v0.2.simg
 CDIR=`readlink -f ${PWD}`
 DATA_DIR=`readlink -f /scratch/wfedorko`
 
