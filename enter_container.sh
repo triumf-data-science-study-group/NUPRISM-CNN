@@ -24,7 +24,11 @@ if [[ $1 != "" ]]; then
 	SCRIPT_TO_RUN=$1
 fi
 
-CONTAINER_PATH= /scratch/wfedorko/TRIUMF_DS_NUPRISM/baseml-v0.2.simg
+echo will run ${SCRIPT_TO_RUN}
+
+CONTAINER_PATH=/scratch/wfedorko/TRIUMF_DS_NUPRISM/baseml-v0.2.simg
+echo I will run this container: ${CONTAINER_PATH}
+ls -lh ${CONTAINER_PATH}
 CDIR=`readlink -f ${PWD}`
 DATA_DIR=`readlink -f /scratch/wfedorko`
 
