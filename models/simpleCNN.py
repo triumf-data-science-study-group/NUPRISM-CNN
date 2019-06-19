@@ -20,20 +20,21 @@ class SimpleCNN(nn.Module):
         self.softmax = nn.Softmax(dim=1)
         
         # Feature extractor
-        
+
+        self.f_embed = nn.Conv2d(num_input_channels, 64, kernel_size=1, stride=1, padding=0)
         # Convolutions and max-pooling
-        self.f_conv1 = nn.Conv2d(num_input_channels, 64, kernel_size=3, stride=1, padding=0)
+        self.f_conv1 = nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1)
         self.f_max_pool1  = nn.MaxPool2d(2,2)
         
-        self.f_conv2a = nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=0)
-        self.f_conv2b = nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=0)
+        self.f_conv2a = nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1)
+        self.f_conv2b = nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1)
         self.f_max_pool2  = nn.MaxPool2d(2,2)
         
-        self.f_conv3a = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=0)
-        self.f_conv3b = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=0)
+        self.f_conv3a = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1)
+        self.f_conv3b = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1)
         self.f_max_pool3 = nn.MaxPool2d(2,2)
         
-        self.f_conv4  = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=0)
+        self.f_conv4  = nn.Conv2d(128, 128, kernel_size=2, stride=1, padding=0)
         
         # Flattening / MLP
         
@@ -47,11 +48,15 @@ class SimpleCNN(nn.Module):
     def forward(self, x):
         
         # Convolutions and max-pooling
-        x = self.f_max_pool1(self.relu(self.f_conv1(x)))
+        x = self.f_max_pool1(self.relu(self.f_conv1(self.relu(self.f_embed(x)))))
+        #print("after first max pool shape of the data: {}".format(x.shape))
         x = self.f_max_pool2(self.relu(self.f_conv2b(self.relu(self.f_conv2a(x)))))
+        #print("after 2nd max pool shape of the data: {}".format(x.shape))
         x = self.f_max_pool3(self.relu(self.f_conv3b(self.relu(self.f_conv3a(x)))))
-        
-        x = self.en_conv4(x)
+        #print("after 3rd max pool shape of the data: {}".format(x.shape))
+        x = self.relu(self.f_conv4(x))
+        #print("after last convolution {}".format(x.shape))
+
         
         # Flattening
         x = nn.MaxPool2d(x.size()[2:])(x)
