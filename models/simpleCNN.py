@@ -31,25 +31,25 @@ class SimpleCNN(nn.Module):
         
         self.f_conv3a = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=0)
         self.f_conv3b = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=0)
-        self.f_max_pool3 = nn.Conv2d(128, 128, kernel_size=2, stride=2, padding=1)
+        self.f_max_pool3 = nn.MaxPool2d(2,2)
         
-        self.f_conv4  = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1)
+        self.f_conv4  = nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=0)
         
-        # Flattening
+        # Flattening / MLP
         
         # Fully-connected layers
-        self.en_fc1 = nn.Linear(128, 128)
-        self.en_fc2 = nn.Linear(128, 128)
-        self.en_fc3 = nn.Linear(128, num_classes)
+        self.fc1 = nn.Linear(128, 128)
+        self.fc2 = nn.Linear(128, 128)
+        self.fc3 = nn.Linear(128, num_classes)
         
     # Forward pass
     
-    def forward(self, X):
+    def forward(self, x):
         
         # Convolutions and max-pooling
-        x = self.en_max_conv1(self.en_conv1(X))
-        x = self.en_max_conv2(self.en_conv2b(self.en_conv2a(x)))
-        x = self.en_max_conv3(self.en_conv3b(self.en_conv3a(x)))
+        x = self.f_max_pool1(self.relu(self.f_conv1(x)))
+        x = self.f_max_pool2(self.relu(self.f_conv2b(self.relu(self.f_conv2a(x)))))
+        x = self.f_max_pool3(self.relu(self.f_conv3b(self.relu(self.f_conv3a(x)))))
         
         x = self.en_conv4(x)
         
@@ -58,8 +58,8 @@ class SimpleCNN(nn.Module):
         x = x.view(-1, 128)
         
         # Fully-connected layers
-        x = self.relu(self.en_fc1(x))
-        x = self.relu(self.en_fc2(x))
-        x = self.en_fc3(x)
+        x = self.relu(self.fc1(x))
+        x = self.relu(self.fc2(x))
+        x = self.fc3(x)
         
         return x
