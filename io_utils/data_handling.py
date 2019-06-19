@@ -75,7 +75,7 @@ class WCH5Dataset(Dataset):
         if self.transform is None:
             return np.array(self.event_data[index,:]),  self.labels[index]
         else:
-            raise NotImplementedError
+            return self.transform(np.array(self.event_data[index,:])),  self.labels[index]
 
 
 
