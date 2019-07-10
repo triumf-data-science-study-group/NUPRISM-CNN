@@ -54,6 +54,7 @@ class WCH5Dataset(Dataset):
         indices = np.arange(len(self))
 
         if self.reduced_size is not None:
+            print("Reduced size: {}".format(self.reduced_size))
             assert len(indices)>=self.reduced_size
             indices = np.random.choice(self.labels.shape[0], reduced_dataset_size)
 

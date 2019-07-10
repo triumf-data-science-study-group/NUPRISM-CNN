@@ -243,9 +243,7 @@ class Engine:
             
         Returns : None
         """
-        
-        # Run number
-        run = 8
+       
         
         # Variables to output at the end
         val_loss = 0.0
@@ -259,14 +257,14 @@ class Engine:
             self.model.eval()
             
             # Variables for the confusion matrix
-            loss, accuracy, labels, predictions, softmaxes, energies = [],[],[],[],[],[]
+            loss, accuracy, labels, predictions, softmaxes= [],[],[],[],[]
             
             # Extract the event data and label from the DataLoader iterator
             for val_data in iter(self.val_iter):
                 
                 sys.stdout.write("val_iterations : " + str(val_iterations) + "\n")
                 
-                self.data, self.label, index, batch_energies = val_data[0:4]
+                self.data, self.label = val_data[0:2]
                 
                 self.label = self.label.long()
 
@@ -284,7 +282,6 @@ class Engine:
                 labels.extend(self.label)
                 predictions.extend(result['prediction'])
                 softmaxes.extend(result["softmax"])
-                energies.extend(batch_energies)
                 
                 val_iterations += 1
                 
@@ -296,7 +293,6 @@ class Engine:
               "\nAvg val acc : ", val_acc/val_iterations)
         
         np.save(self.dirpath + "labels.npy", np.array(labels))
-        np.save(self.dirpath + "energies.npy", np.array(energies))
         np.save(self.dirpath + "predictions.npy", np.array(predictions))
         np.save(self.dirpath + "softmax.npy", np.array(softmaxes))  
         
@@ -321,12 +317,12 @@ class Engine:
         return filename
 
     def restore_state(self, weight_file):
-        weight_file = self.config.restore_state
+        
         # Open a file in read-binary mode
         with open(weight_file, 'rb') as f:
             print('Restoring state from', weight_file)
             # torch interprets the file, then we can access using string keys
-            checkpoint = torch.load(f,map_location="cuda:0" if (self.config.device == 'gpu') else 'cpu')
+            checkpoint = torch.load(f)
             # load network weights
             self.model.load_state_dict(checkpoint['state_dict'], strict=False)
             # if optim is provided, load the state of the optim
